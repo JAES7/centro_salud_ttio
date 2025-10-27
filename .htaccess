@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /centro_salud_ttio/
+
+# Si el archivo o directorio solicitado NO existe...
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# ...redirige la solicitud a index.php
+# (La URL se pasa como un parámetro 'url')
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
