@@ -61,5 +61,18 @@ class Controller {
             die("Error: La vista '" . $view . "' no fue encontrada en: " . $viewPath);
         }
     }
+    protected function loadController($controllerName) {
+        $controllerPath = APP_ROOT . '/controllers/' . $controllerName . '.php';
+        if (file_exists($controllerPath)) {
+            require_once $controllerPath;
+            if (class_exists($controllerName)) {
+                return new $controllerName();
+            } else {
+                throw new Exception("La clase $controllerName no existe en $controllerPath");
+            }
+        } else {
+            throw new Exception("No se encontró el controlador $controllerName en $controllerPath");
+        }
+    }
 }
 ?>

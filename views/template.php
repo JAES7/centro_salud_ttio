@@ -6,7 +6,7 @@ $rol = $_SESSION['rol'] ?? 'guest';
 $esAdmin = ($rol == 'admin');
 $esCaja = ($rol == 'caja' || $esAdmin || $rol == 'soporte'); // Soporte puede ver/usar Caja
 $esTriaje = ($rol == 'triaje' || $esAdmin || $rol == 'soporte'); // Soporte puede ver/usar Triaje
-$esSoporte = ($rol == 'soporte' || $esAdmin); // Catálogos y Reportes (Soporte)
+$esSoporte = ($rol == 'soporte' || $esAdmin || $rol == 'caja' || $rol == 'triaje'); // Catálogos y Reportes (Soporte)
 $esSuperAdmin = $esAdmin; // Usuarios es solo para el rol 'admin' puro
 
 ?>

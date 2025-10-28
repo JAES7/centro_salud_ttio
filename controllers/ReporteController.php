@@ -10,7 +10,9 @@ class ReporteController extends Controller {
     public function __construct() {
         parent::__construct();
         // --- SEGURIDAD: Solo Admin puede acceder a reportes ---
-        if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] != 'admin') {
+        $rol = $_SESSION['rol'] ?? '';
+        // Acepta admin, triaje O soporte
+        if (!isset($_SESSION['id_usuario']) || ($rol != 'admin' && $rol != 'triaje' && $rol != 'soporte' && $rol != 'caja')) {
             header('Location: ' . APP_URL . '/dashboard');
             exit;
         }

@@ -40,7 +40,27 @@ class CajaController extends Controller {
         $this->renderView('caja/index', $data, true);
     }
 
-    public function guardar() { /* ... sin cambios ... */ }
+    public function guardar() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $datos = $_POST;
+            try {
+                $id_nueva_atencion = $this->atencionModel->crearAtencion($datos);
+                if ($id_nueva_atencion) {
+                    $_SESSION['mensaje_exito'] = "¡Atención registrada con éxito! (ID: $id_nueva_atencion)";
+                    $_SESSION['ultimo_id_atencion'] = $id_nueva_atencion;
+                } else {
+                    $_SESSION['mensaje_error'] = "Ocurrió un error desconocido al guardar.";
+                }
+            } catch (Exception $e) {
+                $_SESSION['mensaje_error'] = "<b>Error al guardar:</b> " . $e->getMessage();
+            }
+            header('Location: ' . APP_URL . '/caja');
+            exit;
+        } else {
+            header('Location: ' . APP_URL . '/caja');
+            exit;
+        }
+    }
 
     /**
      * Imprime el ticket (con GENERACIÓN DE CÓDIGO DE BARRAS)
@@ -93,9 +113,28 @@ class CajaController extends Controller {
         $this->renderView('ticket/boleta_termica', $data, false);
     }
 
+/**
+    * API: Obtiene Profesionales por Especialidad
+     */
+    public function getProfesionales($id_especialidad = 0) {
+        // La restricción de seguridad ya fue validada en el __construct, si llegó aquí, es válido.
+        $id_especialidad = filter_var($id_especialidad, FILTER_VALIDATE_INT);
+        $datos = ($id_especialidad > 0) ? $this->profesionalModel->getPorEspecialidad($id_especialidad) : [];
+        header('Content-Type: application/json');
+        echo json_encode($datos);
+        exit;
+    }
 
-    // (Funciones API sin cambios)
-    public function getProfesionales($id_especialidad = 0) { /* ... */ }
-    public function getServicios($id_especialidad = 0) { /* ... */ }
+    /**
+     * API: Obtiene Servicios por Especialidad
+     */
+    public function getServicios($id_especialidad = 0) {
+        // La restricción de seguridad ya fue validada en el __construct, si llegó aquí, es válido.
+        $id_especialidad = filter_var($id_especialidad, FILTER_VALIDATE_INT);
+        $datos = ($id_especialidad > 0) ? $this->servicioModel->getPorEspecialidad($id_especialidad) : [];
+        header('Content-Type: application/json');
+        echo json_encode($datos);
+        exit;
+    }
 }
 ?>
